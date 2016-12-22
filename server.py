@@ -1,4 +1,8 @@
 import os
+import pymongo
+#import ssl
+import json  
+from pymongo import MongoClient
 try:
   from SimpleHTTPServer import SimpleHTTPRequestHandler as Handler
   from SocketServer import TCPServer as Server
@@ -11,6 +15,46 @@ PORT = int(os.getenv('PORT', 8000))
 # Change current directory to avoid exposure of control files
 os.chdir('static')
 
+# VCAP_SERVICES mapping Start
+
+services = os.getenv('VCAP_SERVICES')
+services_json = json.loads(services)
+mongodb_url = services_json['compose-for-mongodb'][0]['credentials']['uri']                     ------>>>>>>> Map your vcap_services here
+#connect:
+client = MongoClient(mongodb_url)  
+#get the default database:
+db = client.get_default_database()  
+print('connected to mongodb!, welcome to mongodb connection, have a fun') 
+
+# VCAP_SERVICES mapping END
+
+###----Regression Code begins------###
+import pandas as pd
+import pickle
+
+
+data = pd.read_csv('d1_test.csv', header=None, names=['Col1', 'Col2', 'Col3', 'Col4', 'Col5', 'Col6'])
+print('\n')
+
+with open('test3_model.pkl', 'rb') as f:
+  classifier = pickle.load(f)
+
+del data['Col1']
+predicted_set = classifier.predict(data)
+prob_predicted = classifier.predict_proba(data)
+data = pd.DataFrame(data, columns=["Col1", "Col2", "Col3", "Col4", "Col5", "Col6"])
+pred = pd.DataFrame(predicted_set, columns=["Col7"])
+df_prob = pd.DataFrame(prob_predicted, columns=["Col8", "Col9"])
+frame1 = [data,pred]
+df1 = pd.concat(frame1,axis=1, join_axes=[data.index])
+frame2 = [df1,df_prob]
+df2 = pd.concat(frame2,axis=1, join_axes=[data.index])
+df2['Col10'] = df2['Col9'].map(lambda x: 'Low' if x < 0.5 else 'Medium' if x < 0.75 else 'High')
+del df2['Col1']
+print df2
+        
+###----Regression Code Ends------###
+
 httpd = Server(("", PORT), Handler)
 try:
   print("Start serving at port %i" % PORT)
@@ -18,4 +62,3 @@ try:
 except KeyboardInterrupt:
   pass
 httpd.server_close()
-
