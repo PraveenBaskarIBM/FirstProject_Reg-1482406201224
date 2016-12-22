@@ -24,7 +24,7 @@ mongodb_url = services_json['compose-for-mongodb'][0]['credentials']['uri']     
 client = MongoClient(mongodb_url)  
 #get the default database:
 db = client.get_default_database()  
-print('connected to mongodb!, welcome to mongodb connection, have a fun') 
+#print('connected to mongodb!, welcome to mongodb connection, have a fun') 
 
 # VCAP_SERVICES mapping END
 
@@ -32,9 +32,13 @@ print('connected to mongodb!, welcome to mongodb connection, have a fun')
 import pandas as pd
 import pickle
 
+db = client.Prototype_bpk
+collection = db.Data_test_bpk
 
-data = pd.read_csv('d1_test.csv', header=None, names=['Col1', 'Col2', 'Col3', 'Col4', 'Col5', 'Col6'])
-print('\n')
+data = collection
+print data
+#data = pd.read_csv('d1_test.csv', header=None, names=['Col1', 'Col2', 'Col3', 'Col4', 'Col5', 'Col6'])
+#print('\n')
 
 with open('test3_model.pkl', 'rb') as f:
   classifier = pickle.load(f)
