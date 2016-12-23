@@ -29,7 +29,7 @@ db = client.get_default_database()
 # VCAP_SERVICES mapping END
 
 ###----Regression Code begins------###
-iimport pandas as pd
+import pandas as pd
 import pickle
 import csv
 '''
