@@ -32,7 +32,7 @@ db = client.get_default_database()
 iimport pandas as pd
 import pickle
 import csv
-
+'''
 data = pd.read_csv('d1_test.csv', header=None, names=['col1', 'col2', 'col3', 'col4', 'col5', 'col6'])
 print('\n')
 with open('test3_model.pkl', 'rb') as f:
@@ -54,7 +54,7 @@ df2 = pd.concat(frame2,axis=1, join_axes=[data.index])
 df2['col10'] = df2['col9'].map(lambda x: 'Low' if x < 0.5 else 'Medium' if x < 0.75 else 'High')
 del df2['col1']
 print df2
-        
+'''        
 ###----Regression Code Ends------###
 
 httpd = Server(("", PORT), Handler)
